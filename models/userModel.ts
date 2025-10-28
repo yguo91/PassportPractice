@@ -1,3 +1,4 @@
+import { User } from '../interfaces';
 const database = [
   {
     id: 1,
@@ -21,21 +22,22 @@ const database = [
 
 const userModel = {
 
-  /* FIX ME (types) 😭 */
-  findOne: (email: any) => {
+  findOne: (email: string):User | null => {
     const user = database.find((user) => user.email === email);
     if (user) {
       return user;
     }
-    throw new Error(`Couldn't find user with email: ${email}`);
+    // throw new Error(`Couldn't find user with email: ${email}`);
+    return null;
   },
-  /* FIX ME (types) 😭 */
-  findById: (id: any) => {
+  
+  findById: (id: number):User | null => {
     const user = database.find((user) => user.id === id);
     if (user) {
       return user;
     }
-    throw new Error(`Couldn't find user with id: ${id}`);
+    // throw new Error(`Couldn't find user with id: ${id}`);
+    return null;
   },
 };
 

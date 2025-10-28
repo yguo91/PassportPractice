@@ -1,15 +1,25 @@
 import {userModel} from "../models/userModel";
+import { User } from "../interfaces";
 
-const getUserByEmailIdAndPassword = (email: string, password: string) => {
+const getUserByEmailIdAndPassword = (
+  email: string, 
+  password: string
+):User | null | 'wrong-password'=> {
   let user = userModel.findOne(email);
-  if (user) {
-    if (isUserValid(user, password)) {
-      return user;
-    }
+  if (!user) {
+    // User doesn't exist
+    return null;
   }
-  return null;
+  
+  if (!isUserValid(user, password)) {
+    // User exists but password is wrong
+    return 'wrong-password';
+  }
+  
+  // User exists and password is correct
+  return user;
 };
-const getUserById = (id:any) => {
+const getUserById = (id:number):User | null => {
   let user = userModel.findById(id);
   if (user) {
     return user;
@@ -17,7 +27,7 @@ const getUserById = (id:any) => {
   return null;
 };
 
-function isUserValid(user: any, password: string) {
+function isUserValid(user: User, password: string):boolean {
   return user.password === password;
 }
 

@@ -1,11 +1,15 @@
-import express from "express";
+import express, {Request, Response} from "express";
 import passport from 'passport';
 import { forwardAuthenticated } from "../middleware/checkAuth";
 
 const router = express.Router();
 
-router.get("/login", forwardAuthenticated, (req, res) => {
-  res.render("login");
+router.get("/login", forwardAuthenticated, (req:Request, res:Response) => {
+  // Get messages and then clear them
+  const messages = req.session.messages || [];
+  req.session.messages = [];
+  
+  res.render("login", { messages });
 })
 
 router.post(
@@ -13,7 +17,7 @@ router.post(
   passport.authenticate("local", {
     successRedirect: "/dashboard",
     failureRedirect: "/auth/login",
-    /* FIX ME: 😭 failureMsg needed when login fails */
+    failureMessage: true
   })
 );
 

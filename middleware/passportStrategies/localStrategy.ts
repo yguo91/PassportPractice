@@ -1,39 +1,49 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { getUserByEmailIdAndPassword, getUserById} from "../../controllers/userController";
-import { PassportStrategy } from '../../interfaces/index';
+import { PassportStrategy, User } from '../../interfaces/index';
 
 const localStrategy = new LocalStrategy(
   {
     usernameField: "email",
     passwordField: "password",
   },
-  (email, password, done) => {
-    const user = getUserByEmailIdAndPassword(email, password);
-    return user
-      ? done(null, user)
-      : done(null, false, {
-          message: "Your login details are not valid. Please try again",
-        });
+  (email: string, password: string, done: (error: any, user?: User | false, options?: { message: string }) => void) => {
+    const result = getUserByEmailIdAndPassword(email, password);
+    
+    if (result === null) {
+      // User not found
+      return done(null, false, {
+        message: `Couldn't find user with email: ${email}`
+      });
+    }
+    
+    if (result === 'wrong-password') {
+      // Password is incorrect
+      return done(null, false, {
+        message: "Password is incorrect"
+      });
+    }
+    
+    // Login successful
+    return done(null, result);
   }
 );
 
-/*
-FIX ME (types) 😭
-*/
-passport.serializeUser(function (user: any, done: any) {
+passport.serializeUser(function (user: Express.User, done: (err: any, id?: number) => void) {
+  // console.log('🔒 Serializing user:', user.id);  // Debug log
   done(null, user.id);
 });
 
-/*
-FIX ME (types) 😭
-*/
-passport.deserializeUser(function (id: any, done: any) {
+passport.deserializeUser(function (id: number, done: (err: any, user?: User | false) => void) {
+  // console.log('🔓 Deserializing user ID:', id);  // Debug log
   let user = getUserById(id);
   if (user) {
+    // console.log('✅ User found:', user.email);  // Debug log
     done(null, user);
   } else {
-    done({ message: "User not found" }, null);
+    // console.log('❌ User not found');  // Debug log
+    done({ message: "User not found" }, false);
   }
 });
 

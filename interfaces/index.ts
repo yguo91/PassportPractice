@@ -12,6 +12,7 @@ export interface User {
   name: string;
   email: string;
   password: string;
+  role: 'user' | 'admin';
 }
 
 // Type for user verification callback in local strategy
@@ -35,6 +36,7 @@ declare global {
       name: string;
       email: string;
       password: string;
+      role: 'user' | 'admin';
     }
   }
 }

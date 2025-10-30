@@ -21,7 +21,8 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy(
                     id: Number(profile.id),
                     name: profile.displayName || (profile.username ?? "") ,
                     email: (profile.emails && profile.emails[0]?.value) || "",
-                    password: ""
+                    password: "",
+                    role: 'user'
                 };
 
                 // Add to database - find existing user or create new one

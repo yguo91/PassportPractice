@@ -13,3 +13,10 @@ export const forwardAuthenticated = (req: Request, res: Response, next: NextFunc
     }
     res.redirect("/dashboard");
 }
+
+export const ensureAdmin = (req: Request, res: Response, next: NextFunction):void => {
+  if (req.isAuthenticated() && req.user && req.user.role === 'admin') {
+    return next();
+  }
+  res.status(403).send("Access denied. Admin only.");
+}

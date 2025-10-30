@@ -5,18 +5,21 @@ const database = [
     name: "Jimmy Smith",
     email: "jimmy123@gmail.com",
     password: "jimmy123!",
+    role: 'admin' as const,
   },
   {
     id: 2,
     name: "Johnny Doe",
     email: "johnny123@gmail.com",
     password: "johnny123!",
+    role: 'user' as const,
   },
   {
     id: 3,
     name: "Jonathan Chen",
     email: "jonathan123@gmail.com",
     password: "jonathan123!",
+    role: 'user' as const,
   },
 ];
 
@@ -54,7 +57,8 @@ const userModel = {
       id: userData.id,
       name: userData.name,
       email: userData.email,
-      password: userData.password
+      password: userData.password,
+      role: userData.role || 'user'
     };
 
     database.push(newUser);

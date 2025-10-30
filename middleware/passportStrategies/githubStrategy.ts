@@ -2,6 +2,7 @@ import { Strategy as GitHubStrategy, Profile } from 'passport-github2';
 import { PassportStrategy, User} from '../../interfaces/index';
 import { Request, Response } from 'express';
 import passport from 'passport';
+import { findOrCreateUser } from '../../controllers/userController';
 
 const githubStrategy: GitHubStrategy = new GitHubStrategy(
     {
@@ -14,6 +15,19 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy(
     async (req: Request, accessToken: string, refreshToken: string, profile: Profile, 
         done: (error: any, user?: User | false)=>void) => {
             try{
+                console.log('GitHub profile:', profile);
+
+                const userData: User = {
+                    id: Number(profile.id),
+                    name: profile.displayName || (profile.username ?? "") ,
+                    email: (profile.emails && profile.emails[0]?.value) || "",
+                    password: ""
+                };
+
+                // Add to database - find existing user or create new one
+                const user = findOrCreateUser(userData);
+
+                return done(null, user);
 
             } catch(error){
                 console.error('GitHub OAuth error:', error);

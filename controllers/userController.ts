@@ -31,7 +31,12 @@ function isUserValid(user: User, password: string):boolean {
   return user.password === password;
 }
 
+const findOrCreateUser = (userData: User): User => {
+  return userModel.findOrCreate(userData);
+};
+
 export {
   getUserByEmailIdAndPassword,
   getUserById,
+  findOrCreateUser,
 };

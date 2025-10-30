@@ -28,4 +28,15 @@ router.get("/logout", (req, res) => {
   res.redirect("/auth/login");
 });
 
+// GitHub OAuth routes
+router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
+
+router.get(
+  "/github/callback",
+  passport.authenticate("github", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/auth/login",
+  })
+);
+
 export default router;
